@@ -13,12 +13,17 @@
 
 ![](https://gallery-1304405887.cos.ap-nanjing.myqcloud.com/markdownasdasNU1rdfsa.png)
 
+# TODO
+
++ 更新更多的EDR绕过技术;
++ 实现 D/Invoke 中的技术;
+
 # 参考
 
-+ https://roberreigada.github.io/posts/playing_with_an_edr/
-+ https://s3cur3th1ssh1t.github.io/A-tale-of-EDR-bypass-methods/
-+ https://github.com/am0nsec/HellsGate
-+ https://ethicalchaos.dev/2020/05/27/lets-create-an-edr-and-bypass-it-part-1/
-+ https://ethicalchaos.dev/2020/06/14/lets-create-an-edr-and-bypass-it-part-2/
-+ https://thewover.github.io/Dynamic-Invoke/
-+ https://j00ru.vexillium.org/syscalls/nt/64/
++ https://roberreigada.github.io/posts/playing_with_an_edr/;
++ https://s3cur3th1ssh1t.github.io/A-tale-of-EDR-bypass-methods/;
++ https://github.com/am0nsec/HellsGate;
++ https://ethicalchaos.dev/2020/05/27/lets-create-an-edr-and-bypass-it-part-1/;
++ https://ethicalchaos.dev/2020/06/14/lets-create-an-edr-and-bypass-it-part-2/;
++ https://thewover.github.io/Dynamic-Invoke/;
++ https://j00ru.vexillium.org/syscalls/nt/64/;
