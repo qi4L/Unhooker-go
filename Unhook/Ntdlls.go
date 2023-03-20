@@ -1,6 +1,7 @@
 package Unhook
 
 import (
+	"bytes"
 	"fmt"
 	"golang.org/x/sys/windows"
 	"syscall"
@@ -138,25 +139,29 @@ func Ntdll() {
 		p4 := IMAGE_FIRST_SECTION(hookedNtHeader)
 		p8 := uintptr(unsafe.Pointer(&p3)) + uintptr(unsafe.Pointer(&p4))
 		hookedSectionHeader := (*PIMAGE_SECTION_HEADER)(unsafe.Pointer(&p8))
-		//sys VirtualProtectNu1r(lpAddress uintptr,dwSize uintptr,flNewProtect uintptr,lpflOldProtect uintptr)(isProtected uintptr)=Kernel32.VirtualProtect
-		isProtected := VirtualProtectNu1r(
-			uintptr(unsafe.Pointer(&ntdllBase))+uintptr(unsafe.Pointer(&hookedSectionHeader.VirtualAddress)),
-			uintptr(unsafe.Pointer(&hookedSectionHeader.Misc.VirtualSize)),
-			windows.PAGE_EXECUTE_READWRITE,
-			uintptr(unsafe.Pointer(&oldProtection)),
-		)
-		fmt.Println(isProtected)
-		srcAddr := ntdllMappingAddress + uintptr(unsafe.Pointer(&hookedSectionHeader.VirtualAddress))
-		dst := make([]byte, hookedSectionHeader.Misc.VirtualSize)
-		addr := uintptr(unsafe.Pointer(&ntdllBase)) + uintptr(unsafe.Pointer(&hookedSectionHeader.VirtualAddress))
-		copy(dst, (*[1 << 30]byte)(unsafe.Pointer(srcAddr))[:hookedSectionHeader.Misc.VirtualSize])
-		copy((*[1 << 30]byte)(unsafe.Pointer(addr))[:hookedSectionHeader.Misc.VirtualSize], dst)
-		isProtected = VirtualProtectNu1r(
-			uintptr(unsafe.Pointer(&ntdllBase))+uintptr(unsafe.Pointer(&hookedSectionHeader.VirtualAddress)),
-			uintptr(unsafe.Pointer(&hookedSectionHeader.Misc.VirtualSize)),
-			oldProtection,
-			uintptr(unsafe.Pointer(&oldProtection)),
-		)
+
+		if bytes.Equal(hookedSectionHeader.Name[:], []byte(".text\x00")) {
+			//sys VirtualProtectNu1r(lpAddress uintptr,dwSize uintptr,flNewProtect uintptr,lpflOldProtect uintptr)(isProtected uintptr)=Kernel32.VirtualProtect
+			isProtected := VirtualProtectNu1r(
+				uintptr(unsafe.Pointer(&ntdllBase))+uintptr(unsafe.Pointer(&hookedSectionHeader.VirtualAddress)),
+				uintptr(unsafe.Pointer(&hookedSectionHeader.Misc.VirtualSize)),
+				windows.PAGE_EXECUTE_READWRITE,
+				uintptr(unsafe.Pointer(&oldProtection)),
+			)
+			fmt.Println(isProtected)
+			srcAddr := ntdllMappingAddress + uintptr(unsafe.Pointer(&hookedSectionHeader.VirtualAddress))
+			dst := make([]byte, hookedSectionHeader.Misc.VirtualSize)
+			addr := uintptr(unsafe.Pointer(&ntdllBase)) + uintptr(unsafe.Pointer(&hookedSectionHeader.VirtualAddress))
+			copy(dst, (*[1 << 30]byte)(unsafe.Pointer(srcAddr))[:hookedSectionHeader.Misc.VirtualSize])
+			copy((*[1 << 30]byte)(unsafe.Pointer(addr))[:hookedSectionHeader.Misc.VirtualSize], dst)
+			isProtected = VirtualProtectNu1r(
+				uintptr(unsafe.Pointer(&ntdllBase))+uintptr(unsafe.Pointer(&hookedSectionHeader.VirtualAddress)),
+				uintptr(unsafe.Pointer(&hookedSectionHeader.Misc.VirtualSize)),
+				oldProtection,
+				uintptr(unsafe.Pointer(&oldProtection)),
+			)
+		}
+
 	}
 	//sys CloseHandleNu1r(hObject uintptr) = Kernel32.CloseHandle
 	CloseHandleNu1r(process)
