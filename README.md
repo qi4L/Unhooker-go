@@ -1,6 +1,6 @@
 ![](https://socialify.git.ci/nu1r/GoLangUnhooker/image?font=Raleway&language=1&logo=https%3A%2F%2Fs1.ax1x.com%2F2022%2F09%2F12%2FvXqOUI.jpg&name=1&owner=1&pattern=Floating%20Cogs&stargazers=1&theme=Light)
 
-# ✅用户层脱钩
+# ✅磁盘覆盖脱钩
 假设Ntdll已经被挂钩, 取消挂钩 DLL 的过程如下：
 1. 将 ntdll.dll 的新副本从磁盘映射到进程内存
 2. 查找挂钩的 ntdll.dll 的 .text 部分的虚拟地址
