@@ -277,8 +277,8 @@ func Inject(DLL string, export string, Pid int, shellcode []byte) {
 		if err = NtFreeVirtualMemoryNu1r(hProcess, loaderAddress); err != nil {
 			log.Fatal(err)
 		}
-		log.Println("执行Shell_code失败，恢复并到处")
+		log.Println("执行Shell_code失败，恢复并导出")
 	} else {
-		log.Println("Shell_code没有在60秒内触发，它可能仍然执行，但我们没有清理")
+		log.Println("Shell_code没有在60秒内触发，它可能仍然执行，但没有清理")
 	}
 }
