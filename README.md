@@ -13,11 +13,11 @@
 
 ![](https://gallery-1304405887.cos.ap-nanjing.myqcloud.com/markdownasdasNU1rdfsa.png)
 
-这个方法理论上可以应用于其他dll
+这个方法理论上可以应用于其他dll。
 
 # ✅Threadless Process Injection
 
-来自 BsidesCymru 2023 演讲 [Needles Without the Thread](https://pretalx.com/bsides-cymru-2023-2022/talk/BNC8W3/)
+来自 BsidesCymru 2023 演讲 [Needles Without the Thread](https://pretalx.com/bsides-cymru-2023-2022/talk/BNC8W3/)。
 
 # ✅动态API解析
 
@@ -49,7 +49,7 @@ addr, _, _ = syscall.SyscallN(GetProcAddressHash("6967162730562302977", "5569890
 
 且大多数 EDR 产品将在用户态下挂钩 win32 api 调用。
 
-这里给出GO汇编示例
+这里给出GO汇编示例：
 
 ```plan9_x86
 TEXT ·proc(SB), NOSPLIT, $0-16
@@ -62,7 +62,7 @@ TEXT ·proc(SB), NOSPLIT, $0-16
     len EQU $-message_string
 ```
 
-缺点：汇编代码在 Windows 操作系统版本之间的某些点上是不同的，有时甚至在服务包/内置编号之间也是不同的
+缺点：汇编代码在 Windows 操作系统版本之间的某些点上是不同的，有时甚至在服务包/内置编号之间也是不同的。
 
 # ✅间接系统调用
 
@@ -70,9 +70,9 @@ TEXT ·proc(SB), NOSPLIT, $0-16
 
 # ✅Patch Inline Hooking
 
-通过应用正确的函数调用，重新钩住被钩住的函数
+通过应用正确的函数调用，重新钩住被钩住的函数。
 
-这个方法理论上可以应用于其他dll
+这个方法理论上可以应用于其他函数。
 
 # TODO
 
