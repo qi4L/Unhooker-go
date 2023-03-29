@@ -13,6 +13,8 @@
 
 ![](https://gallery-1304405887.cos.ap-nanjing.myqcloud.com/markdownasdasNU1rdfsa.png)
 
+这个方法理论上可以应用于其他dll
+
 # ✅Threadless Process Injection
 
 来自 BsidesCymru 2023 演讲 [Needles Without the Thread](https://pretalx.com/bsides-cymru-2023-2022/talk/BNC8W3/)
@@ -43,7 +45,7 @@ addr, _, _ = syscall.SyscallN(GetProcAddressHash("6967162730562302977", "5569890
 
 # ✅直接系统调用
 
-在最新的CS4.8也集成了这种调用方式，但是那是开箱即用，这很不好，对于杀软方很容易就可以打标。
+在最新的CS4.8也集成了这种调用方式，但那是开箱即用的，这很不好，对于杀软方很容易就可以打标。
 
 且大多数 EDR 产品将在用户态下挂钩 win32 api 调用。
 
@@ -66,7 +68,11 @@ TEXT ·proc(SB), NOSPLIT, $0-16
 
 通过syscall.SyscallN的方式来调用API，就是间接系统调用。
 
-# 补丁内联挂钩
+# ✅Patch Inline Hooking
+
+通过应用正确的函数调用，重新钩住被钩住的函数
+
+这个方法理论上可以应用于其他dll
 
 # TODO
 
