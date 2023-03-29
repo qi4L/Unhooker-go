@@ -1,4 +1,4 @@
-package Unhook
+package NtdllUnhook
 
 import (
 	"bytes"
@@ -84,7 +84,7 @@ func IMAGE_FIRST_SECTION(ntheader *PIMAGE_NT_HEADERS64) *PIMAGE_SECTION_HEADER {
 	))
 }
 
-func Ntdll() {
+func Dll() {
 	//sys GetCurrentProcessNu1r()(process uintptr)=Kernel32.GetCurrentProcess
 	process := GetCurrentProcessNu1r()
 	var mi windows.ModuleInfo
@@ -133,7 +133,6 @@ func Ntdll() {
 	p5 := uintptr(unsafe.Pointer(&hookedNtHeader.FileHeader.NumberOfSections))
 	NumberOfSections := (*int)(unsafe.Pointer(p5))
 	Numberofsections1 := *NumberOfSections
-	fmt.Println(Numberofsections1)
 	for i := 0; i < Numberofsections1; i++ {
 		p3 := IMAGE_SIZEOF_SECTION_HEADER * i
 		p4 := IMAGE_FIRST_SECTION(hookedNtHeader)

