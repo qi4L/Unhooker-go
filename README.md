@@ -62,7 +62,11 @@ TEXT ·proc(SB), NOSPLIT, $0-16
 
 缺点：汇编代码在 Windows 操作系统版本之间的某些点上是不同的，有时甚至在服务包/内置编号之间也是不同的
 
-# ☑️间接系统调用
+# ✅间接系统调用
+
+通过syscall.SyscallN的方式来调用API，就是间接系统调用。
+
+# 补丁内联挂钩
 
 # TODO
 
@@ -77,3 +81,4 @@ TEXT ·proc(SB), NOSPLIT, $0-16
 + https://ethicalchaos.dev/2020/06/14/lets-create-an-edr-and-bypass-it-part-2/;
 + https://thewover.github.io/Dynamic-Invoke/;
 + https://j00ru.vexillium.org/syscalls/nt/64/;
++ https://0xdarkvortex.dev/hiding-in-plainsight/
