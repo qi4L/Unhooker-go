@@ -66,7 +66,7 @@ TEXT ·proc(SB), NOSPLIT, $0-16
 
 # ✅间接系统调用
 
-通过syscall.SyscallN的方式来调用API，就是间接系统调用。
+通过函数地址 + syscall.SyscallN的方式来调用API，就是间接系统调用。
 
 # ✅Patch Inline Hooking
 
