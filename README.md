@@ -82,11 +82,16 @@ TEXT ·proc(SB), NOSPLIT, $0-16
 
 # ❌Dual-load 1 (Section)
 
-上面的代码把NtMapViewOfSection换成NtMapViewOfSectionEx
+`KnownDlls`是对象命名空间中的一个目录，其中包含进程加载的最常见 DLL 的部分对象。
 
-KnownDlls 是对象命名空间中的一个目录，其中包含进程加载的最常见 DLL 的部分对象。它旨在通过减少可执行文件的加载时间来提高性能，并且可以通过打开部分名称“”将 NTDLL 的新副本映射到进程中\KnownDlls\ntdll.dll。一旦段对象被映射，我们就可以像前面的方法中描述的那样解析系统调用的地址。有一个用于加载图像的内核通知，如果 EDR 或 AV 发现 NTDLL.dll 被第二次加载，它可能会检查进程是否存在恶意软件或至少通知用户可疑活动。
+存储在注册表`HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\KnownDLLs`下。
+
+它通过减少可执行文件的加载时间来提高性能，并且可以通过打开节名`\KnownDlls\ntdll.dll`将 NTDLL 的新副本映射到进程中。
+
+重新加载之后，我们就相当于获取了一个未被hook的ntdll对象，就可以使用其中的syscall方法了。
 
 有些产品不会挂钩 NtMapViewOfSectionEx，但这仅在 Windows 10 1803 之后可用。
+上面的代码把NtMapViewOfSection换成NtMapViewOfSectionEx。
 
 # TODO
 
