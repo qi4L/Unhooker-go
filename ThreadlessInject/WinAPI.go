@@ -38,12 +38,8 @@ func errnoErr(e syscall.Errno) error {
 }
 
 var (
-	modCrypt32  = windows.NewLazySystemDLL("Crypt32.dll")
-	modKernel32 = windows.NewLazySystemDLL("Kernel32.dll")
-	modntdll    = windows.NewLazySystemDLL("ntdll.dll")
+	modntdll = windows.NewLazySystemDLL("ntdll.dll")
 
-	procCertEnumSystemStore     = modCrypt32.NewProc("CertEnumSystemStore")
-	procVirtualAlloc            = modKernel32.NewProc("VirtualAlloc")
 	procNtAllocateVirtualMemory = modntdll.NewProc("NtAllocateVirtualMemory")
 	procNtFreeVirtualMemory     = modntdll.NewProc("NtFreeVirtualMemory")
 	procNtOpenProcess           = modntdll.NewProc("NtOpenProcess")
@@ -51,23 +47,6 @@ var (
 	procNtReadVirtualMemory     = modntdll.NewProc("NtReadVirtualMemory")
 	procNtWriteVirtualMemory    = modntdll.NewProc("NtWriteVirtualMemory")
 )
-
-func CertEnumSystemStoreNu1r(p1 uintptr, p2 uintptr, p3 uintptr, p4 uintptr) (err error) {
-	r1, _, e1 := syscall.Syscall6(procCertEnumSystemStore.Addr(), 4, uintptr(p1), uintptr(p2), uintptr(p3), uintptr(p4), 0, 0)
-	if r1 == 0 {
-		err = errnoErr(e1)
-	}
-	return
-}
-
-func VirtualAllocNu1r(p1 uintptr, p2 uintptr, p3 uintptr, p4 uintptr) (p5 uintptr, err error) {
-	r0, _, e1 := syscall.Syscall6(procVirtualAlloc.Addr(), 4, uintptr(p1), uintptr(p2), uintptr(p3), uintptr(p4), 0, 0)
-	p5 = uintptr(r0)
-	if p5 == 0 {
-		err = errnoErr(e1)
-	}
-	return
-}
 
 func NtAllocateVirtualMemoryNu1r(p1 uintptr, p2 uintptr, p3 uintptr, p4 uintptr, p5 uintptr, p6 uintptr) (err2 error) {
 	r0, _, _ := syscall.Syscall6(procNtAllocateVirtualMemory.Addr(), 6, uintptr(p1), uintptr(p2), uintptr(p3), uintptr(p4), uintptr(p5), uintptr(p6))

