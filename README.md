@@ -95,7 +95,7 @@ TEXT ·proc(SB), NOSPLIT, $0-16
 
 # ✅NativePayload
 
-一个简单的思路，延时 + RWX 更改为 X 或 RX 或，[来源](https://www.linkedin.com/pulse/2-simple-c-techniques-bypassing-anti-virus-damon-mohammadbagher/)
+一个简单的思路，延时 + RWX 更改为 X 或 RX ，[来源](https://www.linkedin.com/pulse/2-simple-c-techniques-bypassing-anti-virus-damon-mohammadbagher/)。
 
 # TODO
 
