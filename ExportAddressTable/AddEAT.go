@@ -14,6 +14,7 @@ const (
 	SECTION_MAP_EXECUTE = 0x0008
 	SECTION_MAP_READ    = 0x0004
 	SECTION_QUERY       = 0x0001
+	ViewShare           = 1
 )
 
 type IMAGE_FILE_HEADER struct {
@@ -93,7 +94,13 @@ type UNICODE_STRING struct {
 type LARGE_INTEGER struct {
 	LowPart  uint32
 	HighPart int32
+	u        PLARGE_INTEGER
 	QuadPart int64
+}
+
+type PLARGE_INTEGER struct {
+	LowPart  uint32
+	HighPart int32
 }
 
 var (
@@ -103,10 +110,11 @@ var (
 func GetPEBNtdll() uintptr {
 	var KnownDllsNtDllName UNICODE_STRING
 	var p1 ntdll.ObjectAttributes
-	var SectionHandle ntdll.Handle
+	var SectionHandle uintptr
 	temp, _ := syscall.UTF16PtrFromString("\\KnownDlls\\ntdll.dll")
 	hNtdll, _ := windows.LoadLibrary("ntdll.dll")
-	NtMapViewOfSection, _ := windows.GetProcAddress(hNtdll, "NtMapViewOfSectionEX")
+	NtOpenSection, _ := windows.GetProcAddress(hNtdll, "NtOpenSection")
+	NtMapViewOfSection, _ := windows.GetProcAddress(hNtdll, "NtMapViewOfSection")
 	RtlInitUnicodeString, _ := windows.GetProcAddress(hNtdll, "RtlInitUnicodeString")
 	_, _, err2 := syscall.SyscallN(RtlInitUnicodeString,
 		uintptr(unsafe.Pointer(&KnownDllsNtDllName)),
@@ -122,29 +130,26 @@ func GetPEBNtdll() uintptr {
 		SecurityDescriptor:       nil,
 		SecurityQualityOfService: nil,
 	}
-	ntdll.NtOpenSection(
-		&SectionHandle,
-		SECTION_MAP_EXECUTE|SECTION_MAP_READ|SECTION_QUERY,
-		&ObjectAttributes)
+	syscall.SyscallN(NtOpenSection, uintptr(unsafe.Pointer(&SectionHandle)), SECTION_MAP_EXECUTE|SECTION_MAP_READ|SECTION_QUERY, uintptr(unsafe.Pointer(&ObjectAttributes)))
 	//设置要开始映射的偏移量
 	SectionOffset := LARGE_INTEGER{
 		LowPart:  0,
 		HighPart: 0,
 	}
 	//设置所需的基址和要映射的字节数
-	var ViewSize uint32
-	var ViewBase uintptr
-	p2 := windows.CurrentProcess()
+	var ViewSize uint32 = 0
+	var ViewBase uintptr = 0
+	hProcess := windows.CurrentProcess()
 	syscall.SyscallN(
 		NtMapViewOfSection,
 		uintptr(unsafe.Pointer(&SectionHandle)),
-		uintptr(unsafe.Pointer(&p2)),
+		uintptr(unsafe.Pointer(&hProcess)),
 		ViewBase,
 		0,
 		0,
 		uintptr(unsafe.Pointer(&SectionOffset)),
 		uintptr(unsafe.Pointer(&ViewSize)),
-		1,
+		uintptr(ntdll.ViewShare),
 		0,
 		windows.PAGE_EXECUTE_READ)
 	if ViewBase == 0 {

@@ -93,6 +93,10 @@ TEXT ·proc(SB), NOSPLIT, $0-16
 有些产品不会挂钩 NtMapViewOfSectionEx，但这仅在 Windows 10 1803 之后可用。
 上面的代码把NtMapViewOfSection换成NtMapViewOfSectionEx。
 
+# ✅NativePayload
+
+一个简单的思路，延时 + RWX 更改为 X 或 RX 或，[来源](https://www.linkedin.com/pulse/2-simple-c-techniques-bypassing-anti-virus-damon-mohammadbagher/)
+
 # TODO
 
 + 更新更多的EDR绕过技术;
