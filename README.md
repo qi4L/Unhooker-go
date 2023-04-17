@@ -97,6 +97,13 @@ TEXT ·proc(SB), NOSPLIT, $0-16
 
 一个简单的思路，延时 + RWX 更改为 X 或 RX ，[来源](https://www.linkedin.com/pulse/2-simple-c-techniques-bypassing-anti-virus-damon-mohammadbagher/)。
 
+# ✅未公开的API
+
+逆向DLL中的未公开的API，只要序列号没有函数名的，然后直接系统调用传参即可。
+这样的API很可能不在EDR的名单上可以过。
+
+缺点：效果好成本也大，且实战环境多样，在win10 dll中找到的未公开API，win7 和 windows servse中很可能无。
+
 # TODO
 
 + 更新更多的EDR绕过技术;
