@@ -104,6 +104,10 @@ TEXT ·proc(SB), NOSPLIT, $0-16
 
 缺点：效果好成本也大，且实战环境多样，在win10 dll中找到的未公开API，win7 和 windows servse中很可能无。
 
+# unhook库
+
+推一个[unhook库](https://pkg.go.dev/github.com/timwhitez/Doge-Gabh/pkg/Gabh)，看函数名就知道集成了些unhook技巧。
+
 # TODO
 
 + 更新更多的EDR绕过技术;
