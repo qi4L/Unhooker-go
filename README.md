@@ -107,6 +107,7 @@ TEXT ·proc(SB), NOSPLIT, $0-16
 # unhook库
 
 推一个[unhook库](https://pkg.go.dev/github.com/timwhitez/Doge-Gabh/pkg/Gabh)，看函数名就知道集成了些unhook技巧。
+可以从磁盘或者内存中加载函数，但是系统调用自己去定义，他只定义了一部分系统调用，所有调用有些函数时候就会出现莫名其妙的错误。
 
 # TODO
 
