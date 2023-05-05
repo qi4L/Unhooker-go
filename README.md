@@ -49,17 +49,50 @@ addr, _, _ = syscall.SyscallN(GetProcAddressHash("6967162730562302977", "5569890
 
 且大多数 EDR 产品将在用户态下挂钩 win32 api 调用。
 
-这里给出GO汇编示例：
+这里给出泛用的GO汇编示例：
 
 ```plan9_x86
-TEXT ·proc(SB), NOSPLIT, $0-16
-    MOVQ p1+0(SB), AX; MOVQ AX, 0(SP)
-    MOVQ p2+8(SB), BX; MOVQ AX, 8(SP)
-    MOVQ p3+16(SB), CX; MOVQ AX, 16(SP)
-    MOVQ p4+24(SB), DX; MOVQ AX, 24(SP)
-    MOVQ $55h,
-    CALL runtime·exitsyscall(SB)
-    RET
+TEXT	·WinApiSyscall(SB),NOSPLIT,$168-64
+	NO_LOCAL_POINTERS
+	CALL	runtime·entersyscall<ABIInternal>(SB)
+	MOVQ	trap+0(FP), BP	// syscall entry
+	// copy args down
+	LEAQ	a1+8(FP), SI
+	LEAQ	sysargs-160(SP), DI
+	CLD
+	MOVSQ
+	MOVSQ
+	MOVSQ
+	SYSCALL
+	MOVQ	AX, r1+32(FP)
+	MOVQ	$0, r2+40(FP)
+	CMPL	AX, $-1
+	JNE	ok3
+
+	LEAQ	errbuf-128(SP), AX
+	MOVQ	AX, sysargs-160(SP)
+	MOVQ	$128, sysargs1-152(SP)
+	MOVQ	$SYS_ERRSTR, BP
+	SYSCALL
+	CALL	runtime·exitsyscall(SB)
+	MOVQ	sysargs-160(SP), AX
+	MOVQ	AX, errbuf-168(SP)
+	CALL	runtime·gostring(SB)
+	LEAQ	str-160(SP), SI
+	JMP	copyresult3
+
+ok3:         // 返回值
+	CALL	runtime·exitsyscall(SB)
+	LEAQ	·emptystring(SB), SI
+
+copyresult3: // 错误
+	LEAQ	err+48(FP), DI
+
+	CLD
+	MOVSQ
+	MOVSQ
+
+	RET
 ```
 
 缺点：汇编代码在 Windows 操作系统版本之间的某些点上是不同的，有时甚至在服务包/内置编号之间也是不同的。
