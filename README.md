@@ -53,13 +53,13 @@ addr, _, _ = syscall.SyscallN(GetProcAddressHash("6967162730562302977", "5569890
 
 ```plan9_x86
 TEXT ·proc(SB), NOSPLIT, $0-16
-    MOVQ $message_string(SB), RDI
-    MOVQ $len(message_string)-1, RDX
+    MOVQ p1+0(SB), AX; MOVQ AX, 0(SP)
+    MOVQ p2+8(SB), BX; MOVQ AX, 8(SP)
+    MOVQ p3+16(SB), CX; MOVQ AX, 16(SP)
+    MOVQ p4+24(SB), DX; MOVQ AX, 24(SP)
     MOVQ $55h,
-    SYSCALL // 执行系统调用
+    CALL runtime·exitsyscall(SB)
     RET
-
-    len EQU $-message_string
 ```
 
 缺点：汇编代码在 Windows 操作系统版本之间的某些点上是不同的，有时甚至在服务包/内置编号之间也是不同的。
