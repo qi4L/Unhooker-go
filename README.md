@@ -193,12 +193,12 @@ TEXT ·NtProtectVirtualMemory(SB), $0-56
 
 缺点：效果好成本也大，且实战环境多样，在win10 dll中找到的未公开API，win7 和 windows servse中很可能无。
 
-# unhook库
+# 🦚unhook库
 
 推一个[unhook库](https://pkg.go.dev/github.com/timwhitez/Doge-Gabh/pkg/Gabh)，看函数名就知道集成了些unhook技巧。
 可以从磁盘或者内存中加载函数，但是系统调用自己去定义，他只定义了一部分系统调用，所有调用有些函数时候就会出现莫名其妙的错误。
 
-# TODO
+# 🦜TODO
 
 + 更新更多的EDR绕过技术;
 
