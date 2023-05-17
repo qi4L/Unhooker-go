@@ -1,9 +1,6 @@
 package main
 
-import (
-	"UnhookingGoLang/ExportAddressTable"
-	"syscall"
-)
+import "UnhookingGoLang/BlockOpenHandle"
 
 func main() {
 	//DllName := []string{"ntdll.dll", "kernel32.dll", "Crypt32.dll", "User32.dll"}
@@ -18,6 +15,8 @@ func main() {
 	//
 	//PatchInlineHooking.Inline()
 
-	FuncAddr := ExportAddressTable.GetProcAddressFromEAT(ExportAddressTable.GetPEBNtdll(), "RtlMoveMemory")
-	syscall.SyscallN(FuncAddr)
+	//FuncAddr := ExportAddressTable.GetProcAddressFromEAT(ExportAddressTable.GetPEBNtdll(), "RtlMoveMemory")
+	//syscall.SyscallN(FuncAddr)
+
+	BlockOpenHandle.SetProcessSecurityDescriptor()
 }

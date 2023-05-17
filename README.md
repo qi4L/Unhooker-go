@@ -193,6 +193,10 @@ TEXT ·NtProtectVirtualMemory(SB), $0-56
 
 缺点：效果好成本也大，且实战环境多样，在win10 dll中找到的未公开API，win7 和 windows servse中很可能无。
 
+# ✅BlockOpenHandle
+
+阻止任何进程打开你的进程的句柄，只允许 SYTEM 打开你的进程的句柄，这样就可以避免远程内存扫描器
+
 # 🦚unhook库
 
 推一个[unhook库](https://pkg.go.dev/github.com/timwhitez/Doge-Gabh/pkg/Gabh)，看函数名就知道集成了些unhook技巧。
@@ -212,3 +216,4 @@ TEXT ·NtProtectVirtualMemory(SB), $0-56
 + https://thewover.github.io/Dynamic-Invoke/;
 + https://j00ru.vexillium.org/syscalls/nt/64/;
 + https://0xdarkvortex.dev/hiding-in-plainsight/
++ https://github.com/TheD1rkMtr/BlockOpenHandle
