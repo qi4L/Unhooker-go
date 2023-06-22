@@ -1,4 +1,4 @@
-package NtdllUnhook
+package JMPUnhooker
 
 import (
 	"bytes"
@@ -167,4 +167,5 @@ func Dll(DllName string) {
 	CloseHandleNu1r(ntdllFile)
 	CloseHandleNu1r(ntdllMapping)
 	CloseHandleNu1r(ntdllModule)
+	fmt.Println("[+++] {0} IS UNHOOKED!", DllName)
 }

